@@ -106,13 +106,39 @@ def delete(args):
     print("Apache2 must be restarted with 'sudo service apache2 restart'")
     exit(0)
 
+def enable(args):
+    pass
 
+def disable(args):
+    pass
+
+def status(args):
+    pass
+
+def list_apps(args):
+    pass
+
+def liststatus(args):
+    pass
+
+def touch(args):
+    pass
+
+def show_help(args):
+    pass
 
 def main():
     # List of functions
     operations = {
         'deploy': deploy,
         'delete': delete,
+        'enable': enable,
+        'disable': disable,
+        'status': status,
+        'list': list_apps,
+        'liststatus': liststatus,
+        'touch': touch,
+        'help': show_help,
     }
 
     # run command
@@ -122,6 +148,7 @@ def main():
         print("operation not selected. Operations are:")
         for key in operations.keys():
             print("  " + key)
+        show_help(sys.argv[2:])
 
 if __name__ == '__main__':
     main()
