@@ -10,6 +10,6 @@ sys.path.insert(0,"/var/www/{app_name}/")
 
 sys.stderr.write(sys.version)
 
-from FlaskApp import app as application
+from {app_name} import app as application
 application.secret_key = '{secret_key}'
 

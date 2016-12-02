@@ -73,6 +73,7 @@ def deploy(args):
     subprocess.run(['pyvenv', '/var/www/{app_name}/{app_name}/venv'.format(app_name=app_name)])
     # setup venv
     subprocess.run(['bash', script_path + '/flask_setup.bash', '/var/www/{app_name}/{app_name}/venv/bin/activate'.format(app_name=app_name)])
+    shutil.copy(resource_path + 'activate_this.py', '/var/www/{app_name}/{app_name}/venv/bin/'.format(app_name=app_name))
     # create wsgi mapping
     with open(resource_path + 'app.conf', 'r') as fin:
         with open('/etc/apache2/sites-available/{app_name}.conf'.format(app_name=app_name), 'w') as fout:
