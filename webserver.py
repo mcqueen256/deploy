@@ -71,12 +71,17 @@ def deploy(args):
     shutil.copy(resource_path + '__init__.py', '/var/www/{app_name}/{app_name}/__init__.py'.format(app_name=app_name))
     # create virtula evironment
     subprocess.run(['pyvenv', '/var/www/{app_name}/{app_name}/venv'.format(app_name=app_name)])
+    # setup venv
+    subprocess.run(['bash', script_path + '/flask_setup.bash', '/var/www/{app_name}/{app_name}/venv/bin/activate'.format(app_name=app_name)])
     # create wsgi mapping
     with open(resource_path + 'app.conf', 'r') as fin:
         with open('/etc/apache2/sites-available/{app_name}.conf'.format(app_name=app_name), 'w') as fout:
             fout.write(fin.read().format(**settings))
+    # enable in apache2
+    subprocess.run(['a2ensite', '{app_name}.conf'.format(app_name=app_name)])
+    #subprocess.run(['ln', '-s', '/etc/apache2/sites-enabled/{app_name}.conf'.format(app_name=app_name), '/etc/apache2/sites-available/{app_name}.conf'.format(app_name=app_name)])
     # inform the user of the possibility of a server restart
-
+    print("Apache2 must be restarted with 'sudo service apache2 restart'")
 
 def delete(args):
     '''
@@ -94,7 +99,10 @@ def delete(args):
     if i == 'y':
         print('deleting {}'.format(app_name))
         os.remove('/etc/apache2/sites-available/{app_name}.conf'.format(app_name=app_name))
+        os.remove('/etc/apache2/sites-enabled/{app_name}.conf'.format(app_name=app_name))
         shutil.rmtree('/var/www/{}'.format(app_name))
+    # inform the user of the possibility of a server restart
+    print("Apache2 must be restarted with 'sudo service apache2 restart'")
     exit(0)
 
 
