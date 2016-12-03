@@ -176,7 +176,7 @@ def touch(args):
     subprocess.run(['touch', args[0]])
 
 def show_help(args):
-    pass
+    print("read the source")
 
 def main():
     # List of functions
