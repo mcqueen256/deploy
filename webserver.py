@@ -11,6 +11,27 @@ def error(message):
     print(message)
     exit(1)
 
+def app_list():
+    '''
+    app_list() is an auxilary function that returns a list of all the application currently instanciated.
+    '''
+    l = os.listdir('/var/www')
+    l.remove('html')
+    return l
+
+def enabled():
+    '''auxilary function that returns the enabled sites'''
+    return [ w[:-5] for w in os.listdir('/etc/apache2/sites-enabled')]
+
+def disabled():
+    '''returns disabled sites'''
+    sites = app_list()
+    res = []
+    for site in sites:
+        if site not in enabled():
+            res.append(site)
+    return res
+
 def deploy(args):
     '''
     Create a new web server with given name.
@@ -107,16 +128,38 @@ def delete(args):
     exit(0)
 
 def enable(args):
-    pass
+    if len(args) != 1 or args[0] not in app_list():
+        error('invalid argumentsi\nusage: {} enable APPLICATION_NAME'.format(sys.argv[0]))
+    app_name = args[0]
+    if app_name in enabled():
+        error('{} is already enabled'.format(app_name))
+    subprocess.run(['a2ensite', app_name])
+    print("Apache2 must be restarted with 'sudo service apache2 restart'")
+    exit(0)
 
 def disable(args):
-    pass
+    if len(args) != 1 or args[0] not in app_list():
+        error('invalid argumentsi\nusage: {} disable APPLICATION_NAME'.format(sys.argv[0]))
+    app_name = args[0]
+    if app_name in disabled():
+        error('{} is already disabled'.format(app_name))
+    subprocess.run(['a2dissite', app_name])
+    print("Apache2 must be restarted with 'sudo service apache2 restart'")
 
 def status(args):
-    pass
+    if len(args) != 1 or args[0] not in app_list():
+        error('invalid argumentsi\nusage: {} status APPLICATION_NAME'.format(sys.argv[0]))
+    app_name = args[0]
+    stat = ""
+    if app_name in enabled():
+        stat = 'enabled'
+    if app_name in disabled():
+        stat = 'disabled'
+    print(app_name, 'is', stat)
 
 def list_apps(args):
-    pass
+    if len(args) > 0:
+        error('')
 
 def liststatus(args):
     pass
