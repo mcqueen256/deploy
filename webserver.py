@@ -159,13 +159,21 @@ def status(args):
 
 def list_apps(args):
     if len(args) > 0:
-        error('')
+        error('invalid arguments\nusage: {} list'.format(sys.argv[0]))
+    for app_name in app_list():
+        print('  {}'.format(app_name))
 
 def liststatus(args):
-    pass
+    if len(args) > 0:
+        error('invalid arguments\nusage: {} liststatus'.format(sys.argv[0]))
+    for app_name in app_list():
+        stat = 'enabled' if app_name in enabled() else 'disabled'
+        print('  {} {}'.format(app_name, stat))
 
 def touch(args):
-    pass
+    if len(args) > 2 or args[0] not in app_list():
+        error('invalid arguments\nusage: {} touch APPLICATION_NAME'.format(sys.argv[0]))
+    subprocess.run(['touch', args[0]])
 
 def show_help(args):
     pass
